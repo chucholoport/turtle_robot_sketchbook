@@ -143,8 +143,8 @@ void setup()
   pinMode(ENC_R_B, INPUT_PULLUP);
 
   // Hardware interrupts (same mapping for UNO and Mega)
-  attachInterrupt(digitalPinToInterrupt(ENC_L_A), leftEncoderISR, RISING);
-  attachInterrupt(digitalPinToInterrupt(ENC_R_A), rightEncoderISR, RISING);
+  attachInterrupt(0, leftEncoderISR, RISING);
+  attachInterrupt(1, rightEncoderISR, RISING);
 
   // ROS
   nh.initNode();
