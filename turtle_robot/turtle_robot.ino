@@ -45,7 +45,10 @@
 #define IN4 11
 
 #define ENC_L_A 2   // INT0
+#define ENC_L_B 4
+
 #define ENC_R_A 3   // INT1
+#define ENC_R_B 12
 
 // ===================== Robot Constants =====================
 #define PULSES_PER_REV 330.0f
@@ -70,12 +73,18 @@ ros::Subscriber<geometry_msgs::Twist> cmd_sub("cmd_vel", cmdVelCallback);
 // ===================== Encoder ISRs =====================
 void leftEncoderISR()
 {
-  left_ticks++;
+  if (digitalRead(ENC_L_B) == HIGH)
+    left_ticks++;
+  else
+    left_ticks--;
 }
 
 void rightEncoderISR()
 {
-  right_ticks++;
+  if (digitalRead(ENC_R_B) == HIGH)
+    right_ticks++;
+  else
+    right_ticks--;
 }
 
 // ===================== Motor Control =====================
@@ -129,11 +138,13 @@ void setup()
 
   // Encoder pins
   pinMode(ENC_L_A, INPUT_PULLUP);
+  pinMode(ENC_L_B, INPUT_PULLUP);
   pinMode(ENC_R_A, INPUT_PULLUP);
+  pinMode(ENC_R_B, INPUT_PULLUP);
 
   // Hardware interrupts (same mapping for UNO and Mega)
-  attachInterrupt(0, leftEncoderISR, RISING);   // INT0 -> Pin 2
-  attachInterrupt(1, rightEncoderISR, RISING);  // INT1 -> Pin 3
+  attachInterrupt(digitalPinToInterrupt(ENC_L_A), leftEncoderISR, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC_R_A), rightEncoderISR, RISING);
 
   // ROS
   nh.initNode();
